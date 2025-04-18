@@ -46,7 +46,7 @@ PB equ 31h
 CA equ 32h
 CB equ 33h
 org 1000h
-char db "ORGANIZACION Y ARQUITECTURA DE COMPUTADORAS"
+oracion db "ORGANIZACION Y ARQUITECTURA DE COMPUTADORAS"
 fin db ?
 org 3000h
 configurar_pio:
@@ -75,8 +75,8 @@ out PA,al
 ret
 org 2000h
 call configurar_pio
-mov bx,offset char
-mov cl, offset fin -offset char
+mov bx,offset oracion
+mov cl, offset fin -offset oracion
 repetir:
 call poll
 mov al,[bx]
