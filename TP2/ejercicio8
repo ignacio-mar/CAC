@@ -93,4 +93,54 @@ jnz loop
 int 0
 end
 
+e)
+org 1000h
+PA equ 30h
+PB equ 31h
+CA equ 32h
+CB equ 33h
+
+org 3000h
+
+rotarizq:
+add al,al
+jnc fin
+inc al
+fin:
+ret
+
+rotarder_n:
+mov dl,7
+volver:
+call rotarizq
+dec dl
+cmp dl,0
+jnz volver
+ret
+
+
+org 2000h
+mov al,00h
+out CB,al
+mov al,00h
+out PB,al
+repetir:
+mov al,1
+izquierda:
+out PB,al
+call rotarizq
+cmp al,10000000b
+jnz izquierda
+out PB,al
+
+derecha:
+call rotarder_n
+out PB,al
+cmp al,00000001b
+jnz derecha
+out PB,al
+jmp repetir
+int 0
+end
+
 
