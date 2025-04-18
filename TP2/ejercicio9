@@ -88,3 +88,65 @@ dec cl
 jnz repetir
 int 0
 end
+
+c) 
+PA equ 30h
+PB equ 31h
+CA equ 32h
+CB equ 33h
+org 1000h
+palabra db ?,?,?,?,?
+fin db ?
+org 3000h
+configurar_pio:
+mov al,00000001b
+out CA,al
+mov al,00h
+out CB,al
+ret
+
+strobe0:
+in al,PA
+and al,11111101b
+out PA,al
+ret
+
+poll:
+in al,PA
+and al,00000001b
+jnz poll
+ret
+
+leer_palabra:
+push bx
+mov cl,5
+mov al,1
+volver:
+int 6
+inc bx
+dec cl
+jnz volver
+pop bx
+ret
+
+strobe1:
+in al,PA
+or al,00000010b
+out PA,al
+ret
+org 2000h
+call configurar_pio
+mov bx,offset palabra
+call leer_palabra
+mov cl,5
+repetir:
+call poll
+mov al,[bx]
+out PB,al
+call strobe0
+call strobe1
+inc bx
+dec cl
+jnz repetir
+int 0
+end
