@@ -1,1 +1,96 @@
+a)
+org 1000h
+PB equ 31h
+CB equ 33h
+org 2000h
+ mov al,11000011b 
+ out PB,al
+ mov al,00000000b
+ out CB,al
+ int 0
+ end 
+
+b)
+org 1000h
+PA equ 30h
+CA equ 32h
+prendido db "llave prendida"
+fin_prendido db ?
+apagado db " llave apagado"
+fin_apagado db ?
+org 3000h
+imprimir_prendido:
+push bx
+push ax
+mov bx,offset prendido
+mov al, offset fin_prendido-offset prendido
+int 7
+pop ax
+pop bx
+ret
+
+imprimir_apagado:
+push bx
+push ax
+mov bx,offset apagado
+mov al, offset fin_apagado-offset apagado
+int 7
+pop ax
+pop bx
+ret
+
+org 2000h
+ mov al,11111111b
+ out CA,al
+ in al,PA
+ cmp al,10000000b
+ jns saltar
+call imprimir_apagado
+jmp fin
+ saltar:
+ call imprimir_prendido
+ fin:
+ int 0
+ end
+
+c)
+
+org 1000h
+PA equ 30h
+PB equ 31h
+CA equ 32h
+CB equ 33h
+org 2000h
+
+mov al,00h
+out CB,al
+mov al,0ffh
+out CA, al
+loop:
+in al,PA
+out PB,al
+jmp loop
+int 0
+end
+
+d)
+org 1000h
+PA equ 30h
+PB equ 31h
+CA equ 32h
+CB equ 33h
+org 2000h
+
+mov al,00h
+out CB,al
+mov al,0ffh
+loop:
+inc cl
+mov al,cl
+out PB,al
+cmp cl,0ffh
+jnz loop
+int 0
+end
+
 
