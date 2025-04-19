@@ -1,0 +1,20 @@
+a)
+dato equ 40h
+estado equ 41h
+org 1000h
+oracion db "INGENIERIA E INFORMATICA" 
+fin db ?
+org 2000h
+mov bx,offset oracion
+mov cl,offset fin-offset oracion
+poll:
+in al,estado
+and al,1
+jnz poll
+mov al,[bx]
+out dato,al
+inc bx
+dec cl
+jnz poll
+int 0 
+end
