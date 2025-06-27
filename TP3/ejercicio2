@@ -1,0 +1,52 @@
+.data
+dato: .word32 0x10008
+control: .word32 0x10000
+numero0: .asciiz "cero  "
+numero1: .asciiz "uno   "
+numero2: .asciiz "dos   "
+numero3: .asciiz "tres  "
+numero4: .asciiz "cuatro"
+numero5: .asciiz "cinco "
+numero6: .asciiz "seis  "
+numero7: .asciiz "siete "
+numero8: .asciiz "ocho  "
+numero9: .asciiz "nueve "
+msj1: .asciiz "es un digito"
+msj2: .asciiz "NO es un digito"
+
+.text
+lwu $a0,dato($0)
+lwu $a1,control($0)
+jal ingreso
+dadd $a2,$0,$v0
+jal muestra
+halt
+
+ingreso:
+daddi $t0,$0,9
+sd $t0,0($a1)
+lbu $v0,0($a0)
+daddi $t4,$0,0
+slti $t4,$v0,48
+bnez $t4, noesdigito
+slti $t4,$v0,58
+beqz $t4, noesdigito
+j fin
+noesdigito:
+daddi $t0,$0,4
+daddi $t3,$0,msj2
+sd $t3,0($a0)
+sd $t0,0($a1)
+j ingreso
+fin:
+jr $ra
+
+muestra:
+daddi $t0,$0,8
+daddi $a2,$a2,-48
+dmul $t1,$t0,$a2
+daddi $t2,$t1,numero0
+sd $t2,0($a0)
+daddi $t3,$0,4
+sd $t3,0($a1)
+jr $ra
