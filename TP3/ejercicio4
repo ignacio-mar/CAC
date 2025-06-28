@@ -1,0 +1,53 @@
+.data
+dire_dato: .word32 0x10008
+dire_control: .word32 0x10000
+claveCorrecta: .asciiz "ah32"
+claveIngresar: .asciiz "...."
+mensaje_error: .asciiz "ERROR"
+mansaje_correcto: .asciiz "BIENVENIDO"
+.text
+lwu $a0,dire_dato($0)
+lwu $a1, dire_control($0)
+
+volverAIngresar: daddi $t4,$0,4; contador
+daddi $t5,$0,0; cantidad de bytes a desplazarse
+loop: jal char
+sb $v0,claveIngresar($t5)
+daddi $t5,$t5,1; me dezplazo un byte
+daddi $t4,$t4,-1; decremento contador
+bnez $t4,loop
+jal subrutina
+bnez $v0,volverAIngresar
+halt
+
+
+subrutina:
+daddi $t0,$0,4; contador, lo declaro de vuelta para comparar las dos cadenas
+daddi $t1,$0,0; cantidad de bytes a desplazarse
+segundo_loop: lb $t6,claveCorrecta($t1)
+lb $t7,claveIngresar($t1)
+dsub $t6,$t6,$t7
+bnez $t6, error; el primer byte de cada cadena son distintos
+daddi $t1,$t1,1
+daddi $t0,$t0,-1
+bnez $t0, segundo_loop
+daddi $t0,$0,mansaje_correcto
+sd $t0,0($a0)
+daddi $t0,$0,4
+sd $t0,0($a1)
+daddi $v0,$0,0; el 0 indica que la contraseña es correcta
+j fin_subrutina
+error:
+daddi $t0,$0,mensaje_error
+sd $t0,0($a0)
+daddi $t0,$0,4
+sd $t0,0($a1)
+daddi $v0,$0,1; el 1 indica que que tiene que volver a ingresar la contraseña
+fin_subrutina:
+jr $ra
+
+char:
+daddi $t0,$0,9
+sd $t0,0($a1)
+lbu $v0,0($a0)
+jr $ra
