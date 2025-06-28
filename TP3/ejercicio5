@@ -1,0 +1,38 @@
+.data
+dire_dato: .word32 0x10008
+dire_control: .word32 0x10000
+uno: .double 1.0
+cero: .double 0.0
+.text
+lwu $a0,dire_dato($0)
+lwu $a1, dire_control($0)
+daddi $t4,$0,8
+sd $t4,0($a1); ingreso el numero flotante de la base
+l.d f1,0($a0)
+daddi $t4,$0,8
+sd $t4,0($a1); ingreso el numero del exponente
+ld $a2,0($a0)
+jal subrutina
+halt
+
+subrutina:
+l.d f4,cero($0)
+beqz $a2,es_cero
+add.d f2,f4,f1
+daddi $a2,$a2,-1
+beqz $a2,es_uno
+loop: mul.d f2,f2,f1
+daddi $a2,$a2,-1
+bnez $a2, loop
+j fin_subrutina
+es_cero:
+l.d f3,uno($0)
+add.d f2,f4,f3
+j fin_subrutina
+es_uno:
+add.d f2,f4,f1
+fin_subrutina:
+s.d f2, 0($a0)
+daddi $t0,$0,3
+sd $t0,0($a1)
+jr $ra
