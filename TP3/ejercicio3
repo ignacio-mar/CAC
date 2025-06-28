@@ -1,0 +1,45 @@
+.data
+dire_dato: .word32 0x10008
+dire_control: .word32 0x10000
+msj1: .asciiz "es un digito"
+msj2: .asciiz "NO es un digito"
+.code
+
+lwu $a0, dire_dato($0)
+lwu $a1, dire_control($0)
+jal ingreso
+dadd $a2,$0,$v0
+jal ingreso
+dadd $a3,$0,$v0
+jal resultado
+halt
+
+ingreso:
+daddi $t0,$0,9
+sd $t0,0($a1)
+lbu $v0,0($a0)
+daddi $t4,$0,0
+slti $t4,$v0,48
+bnez $t4, noesdigito
+slti $t4,$v0,58
+beqz $t4, noesdigito
+j fin
+noesdigito:
+daddi $t0,$0,4
+daddi $t3,$0,msj2
+sd $t3,0($a0)
+sd $t0,0($a1)
+j ingreso
+fin:
+jr $ra
+
+
+
+resultado:
+daddi $a2,$a2,-48
+daddi $a3,$a3,-48
+dadd $t1,$a2,$a3
+sd $t1,0($a0)
+daddi $t3,$0,1
+sd $t3,0($a1)
+jr $ra
